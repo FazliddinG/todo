@@ -1,10 +1,15 @@
 <template>
   <div>
-    <Header @getSearch="search = $event" />
+    <Header 
+    @getSearch="search = $event" 
+    :lang="lang"
+    @changeLang="changeLang"
+    />
     <Notes 
     :notes="filterNotes" 
     @delNote="delNote" 
     @changeNote="changeNote"
+    :lang="lang"
     
     />
     <Modal 
@@ -15,6 +20,7 @@
     :edit="edit"
     :editNote="editNote"
     @editedNote="editedNote"
+    :lang="lang"
     />
     <AddButton @openModal="openModal" />
   </div>
@@ -60,7 +66,9 @@ export default {
       currentId: 1,
       edit: false,
       editNote: {},
-      search: ''
+      search: '',
+      lang: 'ru',
+      langwords: {}
     }
   },
   methods: {
@@ -104,6 +112,10 @@ export default {
           elem.date = item.date;
         }
       })
+    },
+    changeLang(val){
+      this.lang = val;
+      localStorage.setItem('lang', val)      
     }
   },
   watch: {
@@ -116,6 +128,8 @@ export default {
   },
   created() {
     this.getNotes()
+    this.langwords = langs;
+    this.lang = localStorage.getItem('lang') || 'ru';
   },
   computed: {
     filterNotes(){
@@ -125,6 +139,9 @@ export default {
       })
       return items
     }
+  },
+  provide: {
+    words: langs
   }
 }
 </script>
